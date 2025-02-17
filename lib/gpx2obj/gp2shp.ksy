@@ -1,6 +1,6 @@
 # https://github.com/paulhoad/gp2careditor/blob/master/Car.h
 meta:
-  id: gp2car
+  id: gp2carshape
   title: GrandPrix2 Car shape
   application: GP2 Careditor by Paul Hoad
   file-extension: shp
@@ -28,7 +28,7 @@ instances:
     pos: (_root.header.points_begin - _root.header.scale_begin) + 106
     repeat: expr
     repeat-expr: (_root.header.vertex_begin - _root.header.points_begin) / 8
-  verticies:
+  vertices:
     pos: (_root.header.vertex_begin - _root.header.scale_begin) + 106
     type: vertex
     repeat: expr

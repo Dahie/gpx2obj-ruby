@@ -1,2 +1,6 @@
-require_relative 'gpx2obj/obj_writer'
-require_relative 'gpx2obj/shp_reader'
+require_relative "gpx2obj/gp2carshape"
+require_relative "gpx2obj/obj_reader"
+require_relative "gpx2obj/obj_writer"
+require_relative "gpx2obj/shp_reader"
+require_relative "gpx2obj/vertex"
+require_relative "gpx2obj/version"

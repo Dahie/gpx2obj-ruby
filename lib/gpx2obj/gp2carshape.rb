@@ -6,7 +6,7 @@ unless Gem::Version.new(Kaitai::Struct::VERSION) >= Gem::Version.new('0.9')
   raise "Incompatible Kaitai Struct Ruby API: 0.9 or later is required, but you have #{Kaitai::Struct::VERSION}"
 end
 
-class Gp2car < Kaitai::Struct::Struct
+class Gp2carshape < Kaitai::Struct::Struct
   def initialize(_io, _parent = nil, _root = self)
     super(_io, _parent, _root)
     _read
@@ -147,16 +147,16 @@ class Gp2car < Kaitai::Struct::Struct
     @_io.seek(_pos)
     @scales
   end
-  def verticies
-    return @verticies unless @verticies.nil?
+  def vertices
+    return @vertices unless @vertices.nil?
     _pos = @_io.pos
     @_io.seek(((_root.header.vertex_begin - _root.header.scale_begin) + 106))
-    @verticies = []
+    @vertices = []
     ((((_root.header.vertex_end - _root.header.vertex_begin) / 4) + 1)).times { |i|
-      @verticies << Vertex.new(@_io, self, @_root)
+      @vertices << Vertex.new(@_io, self, @_root)
     }
     @_io.seek(_pos)
-    @verticies
+    @vertices
   end
   def textures
     return @textures unless @textures.nil?
