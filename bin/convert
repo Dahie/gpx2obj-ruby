@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby
+
+
+
+writer = Gpx2Obj.new()
+writer = writer.write("out/model.obj")
