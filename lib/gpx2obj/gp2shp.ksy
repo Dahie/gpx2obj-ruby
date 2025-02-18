@@ -32,7 +32,7 @@ instances:
     pos: (_root.header.vertex_begin - _root.header.scale_begin) + 106
     type: vertex
     repeat: expr
-    repeat-expr: ((_root.header.vertex_end - _root.header.vertex_begin) / 4) + 1
+    repeat-expr: ((_root.header.vertex_end - _root.header.vertex_begin) / 4) -4
   unks:
     type: s2
     pos: (_root.header.vertex_end - _root.header.scale_begin) + 106

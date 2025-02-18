@@ -19,15 +19,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
   spec.required_ruby_version = ">= 3"
 
-  spec.add_dependency("base64")
-  spec.add_dependency("bigdecimal")
-  spec.add_dependency("commander")
-  spec.add_dependency("gollum-lib")
-  spec.add_dependency("mysql2")
-  spec.add_dependency("ostruct")
-  spec.add_dependency("paru")
-  spec.add_dependency("rdoc")
-  spec.add_dependency("ruby-progressbar")
+  spec.add_dependency("kaitai-struct")
 
   spec.metadata["rubygems_mfa_required"] = "true"
 end

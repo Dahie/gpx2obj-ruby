@@ -152,7 +152,7 @@ class Gp2carshape < Kaitai::Struct::Struct
     _pos = @_io.pos
     @_io.seek(((_root.header.vertex_begin - _root.header.scale_begin) + 106))
     @vertices = []
-    ((((_root.header.vertex_end - _root.header.vertex_begin) / 4) + 1)).times { |i|
+    (((_root.header.vertex_end - _root.header.vertex_begin) / 4)).times { |i|
       @vertices << Vertex.new(@_io, self, @_root)
     }
     @_io.seek(_pos)

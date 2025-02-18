@@ -1,7 +1,6 @@
 module Gpx2Obj
-
   # Reader reads everything from the model file.
-  # The terminology in GP2CarEditor of 1995 is a bit 
+  # The terminology in GP2CarEditor of 1995 is a bit
   # messed up by modern sensibilities.
   #
   # GP2Careditor  => Today
@@ -12,29 +11,46 @@ module Gpx2Obj
   # This reader serves as an interface to "modern" terminology
   # used in the rest of the project.
   class ShpReader
-    attr_accessor :file_path, :faces, :car, :vertices
+    attr_accessor :file_path, :model1, :model2
 
     DEF_CAR_START = 0x14C4A8
     HEADER_LENGTH = 106
+    OFFSET_NOSE = 31
+    OFFSET_PTS = 194
 
     def initialize(file_path)
       @file_path = file_path
     end
 
-    def read
-      @car = Gp2carshape.from_file(file_path)
-
-      @vertices = translate_points
-      @faces = read_textures(car.textures)
-
-      debug
+    def car
+      @car ||= Gp2carshape.from_file(file_path)
     end
 
-    private 
+    def model1
+      @model1 ||= Model.new(car: car,
+        vertices: translate_points(:model1),
+        faces: read_textures(car.textures))
+    end
 
-    def translate_points
+    def model2
+      @model2 ||= Model.new(car: car,
+        vertices: translate_points(:model2),
+        faces: read_textures(car.textures))
+    end
+
+    def points_count
+      (car.header.vertex_begin - car.header.points_begin) / 8
+    end
+
+    def points_per_car
+      points_count / 2
+    end
+
+    private
+
+    def translate_points(model = false)
       vertex_list = []
-      car.points.each_with_index do |point, i|
+      car.points[0..points_per_car-1].each_with_index do |point, i|
         # puts "point #{i} - #{point.x}, #{point.y}, #{point.z}, #{point.u}"
 
         x = point.x
@@ -46,32 +62,31 @@ module Gpx2Obj
 
         if x < 0x8000
           if x > 0x80 && x < 0xFF
-            idx = (x - 0x84) / 4;
-            # todo if (HiNose) idx += OFFSET_NOSE;
-            x = car.scales[idx];
-            pointxyz.x = -x;
+            idx = (x - 0x84) / 4
+            #idx += OFFSET_NOSE if model == :model2
+            x = car.scales[idx]
+            pointxyz.x = -x
           elsif x > 0
-            idx = (x - 0x4) / 4;
-            # todo if (HiNose) idx += OFFSET_NOSE;
-            pointxyz.x = car.scales[idx];
+            idx = (x - 0x4) / 4
+            #idx += OFFSET_NOSE if model == :model2
+            pointxyz.x = car.scales[idx]
           end
 
           if y > 0x80 && y < 0xFF
             idx = (y - 0x84) / 4
-            #todo if (HiNose) idx += OFFSET_NOSE;
-            y = car.scales[idx]
-            pointxyz.y = -y
+            #idx += OFFSET_NOSE if model == :model2
+            pointxyz.y = -car.scales[idx]
 
           elsif y > 0
-            idx = (y - 0x04) / 4;
-            #todo if (HiNose) idx += OFFSET_NOSE;
-            pointxyz.y = car.scales[idx];
+            idx = (y - 0x04) / 4
+            #idx += OFFSET_NOSE if model == :model2
+            pointxyz.y = car.scales[idx]
           end
 
         else
-          pidx = x - 0x8000;
-          pointxyz.x = car.points[pidx].x;
-          pointxyz.y = car.points[pidx].y;
+          pidx = x - 0x8000
+          pointxyz.x = vertex_list[pidx].x
+          pointxyz.y = vertex_list[pidx].y
         end
 
         vertex_list << pointxyz
@@ -82,74 +97,14 @@ module Gpx2Obj
       vertex_list
     end
 
-    def debug
-      header = car.header
-
-      num_vertices = header.size8 / 8;
-      num_scale = (header.scale_end - header.scale_begin) / 2;
-      puts "Scales: #{num_scale}"
-      num_points = (header.vertex_begin - header.points_begin) / 8;
-      num_unks = (header.file_end - header.vertex_end) / 2;
-
-      puts "Points: #{num_points}"
-
-      num_vertices = (header.vertex_end - header.vertex_begin) / 4;
-
-      puts "vertices: #{num_vertices}"
-      puts "Unks: #{num_unks}"
-
-      puts "---"
-
-      puts header.magic.inspect
-      puts header.id.inspect
-      puts header.scale_begin
-      puts header.scale_end
-      puts header.texture_begin
-      puts header.vertex_begin
-      puts header.vertex_end
-      puts header.points_begin
-      puts header.texture_end
-
-      puts "---"
-
-      puts HEADER_LENGTH + (header.scale_begin - header.scale_begin) # scale begin
-      puts HEADER_LENGTH + (header.scale_end - header.scale_begin) # scale end
-      puts HEADER_LENGTH + (header.texture_begin - header.scale_begin) # texture begin
-      puts HEADER_LENGTH + (header.texture_end - header.scale_begin) # texture end
-      puts HEADER_LENGTH + (header.points_begin - header.scale_begin) #points begin
-      puts HEADER_LENGTH + (header.vertex_begin - header.scale_begin) # vertex begin
-      puts HEADER_LENGTH + (header.vertex_end - header.scale_begin) # vertex end
-      # puts HEADER_LENGTH + (header.points_end - header.scale_begin) #points end
-
-      puts header.inspect
-
-      puts '-----'
-
-      puts car.scales.count
-      # puts car.scales.inspect
-      # puts car.points.count
-
-      # File.write('out/scales.csv', car.scales.map{|s| s }.join("\n"))
-      # File.write('out/vertices.csv', car.vertices.join('\n'))
-      # File.write('out/points.csv', car.points.join('\n'))
-
-
-      # puts car.vertices.count
-      # car.vertices.each_with_index do |vertex, i|
-      #   puts "vertex #{i} - #{vertex.from}, #{vertex.to}, #{vertex.a}, #{vertex.b}"
-      # end
-
-    end
-
     def read_textures(buffer)
       idx = 0
       count = 0
-      total = buffer.length
+      buffer.length
 
       textureData = {}
 
       187.times do
-        puts "#{count}/#{total}"
         numl = buffer.getbyte(count)
         count += 1
         numh = buffer.getbyte(count)
@@ -164,7 +119,7 @@ module Gpx2Obj
           Args: []
         }
 
-        n_args = 0
+        #puts textureData[idx]
 
         case cmd
         when 0x80, 0x90
@@ -188,7 +143,7 @@ module Gpx2Obj
             textureData[idx][:Args] << buffer.getbyte(count)
             count += 1
           end
-          while !(textureData[idx][:Args][-2] == 0 && textureData[idx][:Args][-1] == 0)
+          until textureData[idx][:Args][-2] == 0 && textureData[idx][:Args][-1] == 0
             2.times do
               textureData[idx][:Args] << buffer.getbyte(count)
               count += 1
@@ -199,7 +154,7 @@ module Gpx2Obj
             textureData[idx][:Args] << buffer.getbyte(count)
             count += 1
           end
-          while !(textureData[idx][:Args][-2] == 0 && textureData[idx][:Args][-1] == 0)
+          until textureData[idx][:Args][-2] == 0 && textureData[idx][:Args][-1] == 0
             2.times do
               textureData[idx][:Args] << buffer.getbyte(count)
               count += 1
@@ -215,22 +170,20 @@ module Gpx2Obj
       textureData
     end
 
-
     def parse_texture(texture_cmd)
       if texture_cmd[:cmd] >= 0x0 && texture_cmd[:cmd] < 0x7F
         start_arg = 5
         start_arg += 4 if texture_cmd[:Args][3] == 0x80
         start_arg = 1 if [0xa, 0x0].include?(texture_cmd[:cmd])
 
-        texture_cmd[:PtsList] = []
+        texture_cmd[:edgeList] = []
         (start_arg...texture_cmd[:numArgs]).step(2) do |i|
           val = texture_cmd[:Args][i] + 256 * texture_cmd[:Args][i + 1]
-          val = -0xffff+val-1 if val > 65_000
-          texture_cmd[:PtsList] << val if val != 0
+          val = -0xffff + val - 1 if val > 65_000
+          val = val - 1 if val > 65_000
+          texture_cmd[:edgeList] << val if val != 0
         end
       end
     end
   end
 end
-
-#face_list.each { |face| puts face.inspect }

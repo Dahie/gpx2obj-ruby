@@ -2,14 +2,7 @@
 
 require_relative '../lib/gpx2obj'
 
-reader = Gpx2Obj::ShpReader.new('spec/fixtures/high-nose.shp')
-reader.read
+reader = Gpx2Obj::ShpReader.new('spec/fixtures/carshape.shp')
 
-writer = Gpx2Obj::ObjWriter.new(reader.car, reader.vertices, reader.faces)
-writer = writer.write("out/model.obj")
 
-reader2 = Gpx2Obj::ObjReader.new('out/model.obj')
-reader2.read
-puts reader2.faces.count
-puts reader2.vertices.count
-puts reader2.statistics
+reader.model1.write("out/model.obj", Gpx2Obj::ObjWriter)
