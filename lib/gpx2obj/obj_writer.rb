@@ -9,33 +9,35 @@ module Gpx2Obj
     end
 
     def content
-      "g\n#{vertices_content}\n#{faces_content}"
+      "#{vertices_content}\n#{faces_content}"
     end
 
     private
 
-
     def vertex_ids_per_face(face)
       puts face.inspect
       face[:edgeList].map do |edge_id|
-        edge_id = edge_id.abs
+        aedge_id = edge_id.abs
         next if edge_id > 32000
-        edge = model.edges[edge_id]
+        edge = model.edges[aedge_id]
         puts edge.inspect
-        [edge.from, edge.to] #.compact
-      end.compact.flatten.join(" ")
+        edge_id.positive? ? [edge.from, edge.to] : [edge.to, edge.from]
+      end.compact.flatten.uniq
     end
 
     def faces_content
-      "g car\nusemtl white\n".tap do |content|
+      "usemtl white\n".tap do |content|
         faces.each do |id, face|
           next unless face[:edgeList]
+
+          vs = vertex_ids_per_face(face)
+          vs.each do |v|
+            puts vertices[v].inspect
+          end
+
           content << "# id #{id}\n"
-          content << "f #{vertex_ids_per_face(face)}\n"
+          content << "f #{vs.map{|v|v+=1}.join(" ")}\n"
         end
-        # vertices.each_with_index do |point, i|
-        #   content << "f #{i} #{i} #{i}\n"
-        # end
         content << "# #{faces.count} elements\n"
       end
     end
@@ -44,7 +46,7 @@ module Gpx2Obj
       "".tap do |content|
         vertices.each_with_index do |point, i|
           content << "# id #{i}\n"
-          content << "v #{point.x.to_f * 0.1} #{point.y.to_f * 0.1} #{point.z.to_f * 0.1}\n"
+          content << "v #{point.x.to_f * 0.1} #{point.z.to_f * 0.1} #{point.y.to_f * 0.1}\n"
         end
         content << "# #{vertices.count} vertices\n"
       end
