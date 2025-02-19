@@ -30,6 +30,7 @@ instances:
     repeat-expr: (_root.header.vertex_begin - _root.header.points_begin) / 8
   vertices:
     pos: (_root.header.vertex_begin - _root.header.scale_begin) + 106
+    # pos: (_root.header.vertex_begin - _root.header.scale_begin) + 106 + 4
     type: vertex
     repeat: expr
     repeat-expr: ((_root.header.vertex_end - _root.header.vertex_begin) / 4)

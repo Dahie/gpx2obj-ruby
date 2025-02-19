@@ -19,13 +19,10 @@ module Gpx2Obj
     end
 
     def write_debug
-
-
       File.write("./out/scales.csv", car.scales.map(&:inspect).join("\n"))
       File.write("./out/edges.csv", car.vertices.map(&:inspect).join("\n"))
       File.write("./out/points.csv", car.points.map(&:inspect).join("\n"))
       File.write("./out/vertices_m1.csv", car.vertices.map(&:inspect).join("\n"))
-
     end
 
     def debug

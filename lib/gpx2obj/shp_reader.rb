@@ -11,7 +11,7 @@ module Gpx2Obj
   # This reader serves as an interface to "modern" terminology
   # used in the rest of the project.
   class ShpReader
-    attr_accessor :file_path, :model1, :model2
+    attr_accessor :file_path
 
     DEF_CAR_START = 0x14C4A8
     HEADER_LENGTH = 106
@@ -42,15 +42,26 @@ module Gpx2Obj
       (car.header.vertex_begin - car.header.points_begin) / 8
     end
 
-    def points_per_car
+    def points_per_car_count
       points_count / 2
     end
 
     private
 
-    def translate_points(model = false)
+    def points_per_car(model = :model1)
+      car.points[points_per_car_count..].each_with_index do |p, i|
+        p2 = car.points[0..points_per_car_count - 1][i]
+        puts(p.inspect, p2.inspect, i) if p2.x != p.x || p2.y != p.y || p2.z != p.z
+      end
+
+      car.points[points_per_car_count..] if model == :model2
+
+      car.points[0..points_per_car_count - 1]
+    end
+
+    def translate_points(model = :model1)
       vertex_list = []
-      car.points[0..points_per_car-1].each_with_index do |point, i|
+      points_per_car(model).each_with_index do |point, i|
         # puts "point #{i} - #{point.x}, #{point.y}, #{point.z}, #{point.u}"
 
         x = point.x
@@ -63,23 +74,23 @@ module Gpx2Obj
         if x < 0x8000
           if x > 0x80 && x < 0xFF
             idx = (x - 0x84) / 4
-            #idx += OFFSET_NOSE if model == :model2
+            idx += OFFSET_NOSE if model == :model2
             x = car.scales[idx]
             pointxyz.x = -x
           elsif x > 0
             idx = (x - 0x4) / 4
-            #idx += OFFSET_NOSE if model == :model2
+            idx += OFFSET_NOSE if model == :model2
             pointxyz.x = car.scales[idx]
           end
 
           if y > 0x80 && y < 0xFF
             idx = (y - 0x84) / 4
-            #idx += OFFSET_NOSE if model == :model2
+            idx += OFFSET_NOSE if model == :model2
             pointxyz.y = -car.scales[idx]
 
           elsif y > 0
             idx = (y - 0x04) / 4
-            #idx += OFFSET_NOSE if model == :model2
+            idx += OFFSET_NOSE if model == :model2
             pointxyz.y = car.scales[idx]
           end
 
@@ -119,7 +130,7 @@ module Gpx2Obj
           Args: []
         }
 
-        #puts textureData[idx]
+        # puts textureData[idx]
 
         case cmd
         when 0x80, 0x90
@@ -164,7 +175,7 @@ module Gpx2Obj
 
         textureData[idx][:numArgs] = textureData[idx][:Args].size
         parse_texture(textureData[idx])
-        puts textureData[idx]
+        puts textureData[idx][:edgeList].inspect
         idx += 1
       end
       textureData
@@ -180,7 +191,7 @@ module Gpx2Obj
         (start_arg...texture_cmd[:numArgs]).step(2) do |i|
           val = texture_cmd[:Args][i] + 256 * texture_cmd[:Args][i + 1]
           val = -0xffff + val - 1 if val > 65_000
-          val = val - 1 if val > 65_000
+          val -= 1 if val > 65_000
           texture_cmd[:edgeList] << val if val != 0
         end
       end

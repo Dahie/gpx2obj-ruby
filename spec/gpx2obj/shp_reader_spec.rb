@@ -6,25 +6,24 @@ RSpec.describe Gpx2Obj::ShpReader do
   let(:expected_values) { YAML.load_file("spec/fixtures/carshape.yaml") }
   subject { described_class.new(input_shp) }
 
-  describe '#points_count' do
+  describe "#points_count" do
     it do
       expect(subject.points_count).to eq 388
     end
   end
 
   describe "#model1" do
-    let(:expected_points) { expected_values.dig("model1", "points_translated").map { |p| p.split(" ").map(&:to_i).slice(2..-1) } }
+    let(:expected_points) { expected_values.dig("model1", "points_translated").map { |p| p.split(" ").map(&:to_i).slice(2..) } }
     let(:points) { subject.model1.vertices.map { |v| [v.x, v.y, v.z] } }
     let(:textures) { subject.model1.faces }
 
     it "has expected points values" do
-
       "".tap do |content|
         points.each_with_index do |p, i|
           next if p == expected_points[i]
-          content <<  "#{i} " +  p.inspect + " - "  + expected_points[i].inspect + "\n"
+          content << "#{i} " + p.inspect + " - " + expected_points[i].inspect + "\n"
         end
-        File.write('out/debug_raw_points.csv', content)
+        File.write("out/debug_raw_points.csv", content)
       end
 
       puts points.inspect
@@ -42,6 +41,10 @@ RSpec.describe Gpx2Obj::ShpReader do
 
     it "has expected textures count" do
       expect(textures.count).to eq 187
+    end
+
+    it "model one does not match model 2" do
+      expect(subject.model1).to_not eq(subject.model2)
     end
   end
 end

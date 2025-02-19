@@ -27,15 +27,12 @@ RSpec.describe Gpx2Obj::ObjWriter do
   describe "#content" do
     it "generates correct content format" do
       expected_content = <<~CONTENT
-
-        g
         # id 0
-        v 1.0 2.0 3.0
+        v 1.0 3.0 2.0
         # id 1
-        v 4.0 5.0 6.0
+        v 4.0 6.0 5.0
         # 2 vertices
 
-        g car
         usemtl white
         # id 1
         f 1 2

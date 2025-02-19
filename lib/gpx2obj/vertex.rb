@@ -1,6 +1,6 @@
 module Gpx2Obj
   class Vertex
-    attr_reader :id, :connected, :id
+    attr_reader :id, :connected
     attr_accessor :y, :x, :z
 
     def initialize(id, x, y, z)

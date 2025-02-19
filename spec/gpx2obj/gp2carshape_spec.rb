@@ -1,5 +1,5 @@
 require_relative "../spec_helper"
-require 'yaml'
+require "yaml"
 
 RSpec.describe Gp2carshape do
   subject(:car) { Gp2carshape.from_file("spec/fixtures/carshape.shp") }
@@ -22,8 +22,8 @@ RSpec.describe Gp2carshape do
   end
 
   describe "#points" do
-  let(:expected_points) { expected_values.dig("generic", "points_raw").map { |p| p.split(" ").map(&:to_i).slice(1..-2) } }
-  let(:points) {car.points.map { |p| [p.x, p.y, p.z]}  }
+    let(:expected_points) { expected_values.dig("generic", "points_raw").map { |p| p.split(" ").map(&:to_i).slice(1..-2) } }
+    let(:points) { car.points.map { |p| [p.x, p.y, p.z] } }
 
     it "has expected points count" do
       expect(car.points.count).to eq 388
@@ -38,10 +38,10 @@ RSpec.describe Gp2carshape do
 
   describe "#vertices" do
     let(:expected_vertices) { expected_values.dig("model1", "vertices").map { |p| p.split(" ").map(&:to_i) } }
-    
+
     it "has expected vertices count" do
-        expect(car.vertices.count).to eq 301
-      end
+      expect(car.vertices.count).to eq 301
+    end
 
     it "has expected vertex values" do
       vertices = car.vertices.map { |v| [v.from, v.to, v.a, v.b] }

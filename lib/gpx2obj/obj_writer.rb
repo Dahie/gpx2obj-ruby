@@ -15,12 +15,11 @@ module Gpx2Obj
     private
 
     def vertex_ids_per_face(face)
-      puts face.inspect
       face[:edgeList].map do |edge_id|
         aedge_id = edge_id.abs
-        next if edge_id > 32000
+        next if edge_id > 32000 # TODO hacky
+
         edge = model.edges[aedge_id]
-        puts edge.inspect
         edge_id.positive? ? [edge.from, edge.to] : [edge.to, edge.from]
       end.compact.flatten.uniq
     end
@@ -31,12 +30,12 @@ module Gpx2Obj
           next unless face[:edgeList]
 
           vs = vertex_ids_per_face(face)
-          vs.each do |v|
-            puts vertices[v].inspect
-          end
+          # vs.each do |v|
+          #   puts vertices[v].inspect
+          # end
 
           content << "# id #{id}\n"
-          content << "f #{vs.map{|v|v+=1}.join(" ")}\n"
+          content << "f #{vs.map { |v| v + 1 }.join(" ")}\n"
         end
         content << "# #{faces.count} elements\n"
       end
