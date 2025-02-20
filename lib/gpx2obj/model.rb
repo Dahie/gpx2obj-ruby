@@ -1,17 +1,15 @@
-require "forwardable"
-
 module Gpx2Obj
   class Model
-    extend Forwardable
+    attr_reader :car, :vertices, :faces, :texture_coordinates, :texture_index
 
-    attr_reader :car, :vertices, :faces
-
-    def initialize(car:, vertices:, faces:)
+    def initialize(car:, vertices:, faces:, texture_coordinates:, texture_index:)
       @car = car
       @vertices = vertices
       @faces = faces
+      @texture_coordinates = texture_coordinates
+      @texture_index = texture_index
 
-      write_debug
+      # write_debug
     end
 
     def edges
@@ -19,12 +17,24 @@ module Gpx2Obj
     end
 
     def vertex_ids_per_face(face)
+      puts face.inspect
       face[:edgeList].map do |edge_id|
         aedge_id = edge_id.abs
         next if edge_id > 32000 # TODO hacky
 
         edge = edges[aedge_id]
-        edge_id.positive? ? [edge.from, edge.to] : [edge.to, edge.from]
+
+        if edge_id.positive?
+          from_id = edge.from + 1
+          to_id = edge.to + 1
+        else
+          from_id = edge.to + 1
+          to_id = edge.from + 1
+        end
+        from_uv_id = texture_index[from_id]
+        to_uv_id = texture_index[to_id]
+
+        "#{from_id}/#{from_uv_id} #{to_id}/#{to_uv_id}"
       end.compact.flatten.uniq
     end
 

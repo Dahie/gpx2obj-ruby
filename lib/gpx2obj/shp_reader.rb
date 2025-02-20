@@ -17,6 +17,7 @@ module Gpx2Obj
     HEADER_LENGTH = 106
     OFFSET_NOSE = 31
     OFFSET_PTS = 194
+    TEXTURE_CFG_PATH = "texture.cfg"
 
     def initialize(file_path)
       @file_path = file_path
@@ -29,13 +30,17 @@ module Gpx2Obj
     def model1
       @model1 ||= Model.new(car: car,
         vertices: translate_points(:model1),
-        faces: read_textures(car.textures))
+        faces: read_textures(car.textures),
+        texture_coordinates: uv_coordinates,
+        texture_index: uv_index)
     end
 
     def model2
       @model2 ||= Model.new(car: car,
         vertices: translate_points(:model2),
-        faces: read_textures(car.textures))
+        faces: read_textures(car.textures),
+        texture_coordinates: uv_coordinates,
+        texture_index: uv_index)
     end
 
     def points_count
@@ -47,13 +52,54 @@ module Gpx2Obj
     end
 
     def points_per_car(model = :model1)
-      car.points[points_per_car_count..].each_with_index do |p, i|
-        p2 = car.points[0..points_per_car_count][i]
-        puts(p.inspect, p2.inspect, i) if p2.x != p.x || p2.y != p.y || p2.z != p.z
-      end
       return car.points[points_per_car_count..] if model == :model2
 
       car.points[0..points_per_car_count - 1]
+    end
+
+    def uv_index
+      @uv_index ||= {}
+    end
+
+    def uv_coordinates
+      @uv_coordinates ||= []
+    end
+
+    def texture_coordinates
+      return @data unless @data
+
+      file = File.open(TEXTURE_CFG_PATH)
+      @data = {}.tap do |data|
+        file.readlines.map(&:chomp).map(&:strip).each do |line|
+          next if line.empty? || line.start_with?("//")
+
+          parts = line.split(",").map(&:strip).map(&:to_i)
+          index = parts[0]
+          num = parts[1]
+
+          next if [0, 1].include?(index)
+
+          data[index] = [].tap do |coordinates|
+            num.times do |i|
+              u = parts[i + 2]
+              v = parts[i + 3]
+              coordinates << [u, v]
+              uv_coordinates << [u, v]
+            end
+          end
+        end
+        uv_coordinates.uniq!
+        @data.each do |id, coordinates|
+          coordinates.each do |co|
+            uv_index[index] = [] unless uv_index[index]
+            uv_index[index] << uv_coordinates.find_index(co)
+          end
+        end
+      end
+
+      file.close
+
+      data
     end
 
     private
@@ -70,7 +116,6 @@ module Gpx2Obj
 
         if pointxyz.z > 0x8000
           pointxyz.z = -(0x10000 - z)
-          puts z, pointxyz.z
         end
 
         if x < 0x8000
@@ -132,8 +177,6 @@ module Gpx2Obj
           Args: []
         }
 
-        # puts textureData[idx]
-
         case cmd
         when 0x80, 0x90
           7.times do
@@ -177,7 +220,6 @@ module Gpx2Obj
 
         textureData[idx][:numArgs] = textureData[idx][:Args].size
         parse_texture(textureData[idx])
-        # puts textureData[idx][:edgeList].inspect
         idx += 1
       end
       textureData

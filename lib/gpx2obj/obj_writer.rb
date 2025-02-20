@@ -9,25 +9,34 @@ module Gpx2Obj
     end
 
     def content
-      "#{vertices_content}\n#{faces_content}"
+      "mtllib model.mtl\n\n#{vertices_content}\n#{texture_content}\n#{faces_content}"
     end
 
     private
 
     def faces_content
-      "usemtl white\n".tap do |content|
+      "usemtl Textured\n".tap do |content|
         faces.each do |id, face|
           next unless face[:edgeList]
 
+          content << "# id #{face[:numl]}\n"
           vs = model.vertex_ids_per_face(face)
-          # vs.each do |v|
-          #   puts vertices[v].inspect
-          # end
-
-          content << "# id #{id}\n"
-          content << "f #{vs.map { |v| v + 1 }.join(" ")}\n"
+          content << "f #{vs.join(" ")}\n"
         end
         content << "# #{faces.count} elements\n"
+      end
+    end
+
+    def vt_lookup
+      @vt_lookup ||= []
+    end
+
+    def texture_content
+      "".tap do |content|
+        model.texture_coordinates.each do |point|
+          content << "# face {id}\n"
+          content << "vt #{point[0]} #{point[1]}\n"
+        end
       end
     end
 
