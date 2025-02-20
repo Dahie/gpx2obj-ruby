@@ -46,18 +46,17 @@ module Gpx2Obj
       points_count / 2
     end
 
-    private
 
     def points_per_car(model = :model1)
       car.points[points_per_car_count..].each_with_index do |p, i|
-        p2 = car.points[0..points_per_car_count - 1][i]
+        p2 = car.points[0..points_per_car_count][i]
         puts(p.inspect, p2.inspect, i) if p2.x != p.x || p2.y != p.y || p2.z != p.z
       end
+      return car.points[points_per_car_count..] if model == :model2
 
-      car.points[points_per_car_count..] if model == :model2
-
-      car.points[0..points_per_car_count - 1]
+      car.points[0..points_per_car_count-1]
     end
+    private
 
     def translate_points(model = :model1)
       vertex_list = []
@@ -69,7 +68,10 @@ module Gpx2Obj
         z = point.z
         pointxyz = Vertex.new(i, x, y, z)
 
-        pointxyz.z = -(0x10000 - z) if pointxyz.z > 0x8000
+        if pointxyz.z > 0x8000
+          pointxyz.z = -(0x10000 - z)
+          puts z, pointxyz.z
+        end
 
         if x < 0x8000
           if x > 0x80 && x < 0xFF
@@ -175,7 +177,7 @@ module Gpx2Obj
 
         textureData[idx][:numArgs] = textureData[idx][:Args].size
         parse_texture(textureData[idx])
-        puts textureData[idx][:edgeList].inspect
+        #puts textureData[idx][:edgeList].inspect
         idx += 1
       end
       textureData

@@ -18,6 +18,16 @@ module Gpx2Obj
       car.vertices
     end
 
+    def vertex_ids_per_face(face)
+      face[:edgeList].map do |edge_id|
+        aedge_id = edge_id.abs
+        next if edge_id > 32000 # TODO hacky
+
+        edge = edges[aedge_id]
+        edge_id.positive? ? [edge.from, edge.to] : [edge.to, edge.from]
+      end.compact.flatten.uniq
+    end
+
     def write_debug
       File.write("./out/scales.csv", car.scales.map(&:inspect).join("\n"))
       File.write("./out/edges.csv", car.vertices.map(&:inspect).join("\n"))

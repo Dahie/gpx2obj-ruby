@@ -14,22 +14,12 @@ module Gpx2Obj
 
     private
 
-    def vertex_ids_per_face(face)
-      face[:edgeList].map do |edge_id|
-        aedge_id = edge_id.abs
-        next if edge_id > 32000 # TODO hacky
-
-        edge = model.edges[aedge_id]
-        edge_id.positive? ? [edge.from, edge.to] : [edge.to, edge.from]
-      end.compact.flatten.uniq
-    end
-
     def faces_content
       "usemtl white\n".tap do |content|
         faces.each do |id, face|
           next unless face[:edgeList]
 
-          vs = vertex_ids_per_face(face)
+          vs = model.vertex_ids_per_face(face)
           # vs.each do |v|
           #   puts vertices[v].inspect
           # end
