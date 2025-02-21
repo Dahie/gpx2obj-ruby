@@ -1,14 +1,14 @@
 # This is a generated file! Please edit source .ksy file and use kaitai-struct-compiler to rebuild
 
-require 'kaitai/struct/struct'
+require "kaitai/struct/struct"
 
-unless Gem::Version.new(Kaitai::Struct::VERSION) >= Gem::Version.new('0.9')
+unless Gem::Version.new(Kaitai::Struct::VERSION) >= Gem::Version.new("0.9")
   raise "Incompatible Kaitai Struct Ruby API: 0.9 or later is required, but you have #{Kaitai::Struct::VERSION}"
 end
 
 class Gp2carshape < Kaitai::Struct::Struct
   def initialize(_io, _parent = nil, _root = self)
-    super(_io, _parent, _root)
+    super
     _read
   end
 
@@ -18,15 +18,16 @@ class Gp2carshape < Kaitai::Struct::Struct
     @header = Header.new(_io__raw_header, self, @_root)
     self
   end
+
   class Header < Kaitai::Struct::Struct
     def initialize(_io, _parent = nil, _root = self)
-      super(_io, _parent, _root)
+      super
       _read
     end
 
     def _read
       @magic = @_io.read_bytes(2)
-      raise Kaitai::Struct::ValidationNotEqualError.new([2, 128].pack('C*'), magic, _io, "/types/header/seq/0") if not magic == [2, 128].pack('C*')
+      raise Kaitai::Struct::ValidationNotEqualError.new([2, 128].pack("C*"), magic, _io, "/types/header/seq/0") if magic != [2, 128].pack("C*")
       @id = @_io.read_s2le
       @scale_begin = @_io.read_u4le
       @scale_end = @_io.read_u4le
@@ -61,9 +62,10 @@ class Gp2carshape < Kaitai::Struct::Struct
     attr_reader :size
     attr_reader :size8
   end
+
   class Vertex < Kaitai::Struct::Struct
     def initialize(_io, _parent = nil, _root = self)
-      super(_io, _parent, _root)
+      super
       _read
     end
 
@@ -79,9 +81,10 @@ class Gp2carshape < Kaitai::Struct::Struct
     attr_reader :a
     attr_reader :b
   end
+
   class Point < Kaitai::Struct::Struct
     def initialize(_io, _parent = nil, _root = self)
-      super(_io, _parent, _root)
+      super
       _read
     end
 
@@ -97,9 +100,10 @@ class Gp2carshape < Kaitai::Struct::Struct
     attr_reader :z
     attr_reader :u
   end
+
   class TextureCmd < Kaitai::Struct::Struct
     def initialize(_io, _parent = nil, _root = self)
-      super(_io, _parent, _root)
+      super
       _read
     end
 
@@ -125,6 +129,7 @@ class Gp2carshape < Kaitai::Struct::Struct
     attr_reader :args_0x90
     attr_reader :args_0x13
   end
+
   def points
     return @points unless @points.nil?
     _pos = @_io.pos
@@ -136,6 +141,7 @@ class Gp2carshape < Kaitai::Struct::Struct
     @_io.seek(_pos)
     @points
   end
+
   def scales
     return @scales unless @scales.nil?
     _pos = @_io.pos
@@ -147,6 +153,7 @@ class Gp2carshape < Kaitai::Struct::Struct
     @_io.seek(_pos)
     @scales
   end
+
   def vertices
     return @vertices unless @vertices.nil?
     _pos = @_io.pos
@@ -158,6 +165,7 @@ class Gp2carshape < Kaitai::Struct::Struct
     @_io.seek(_pos)
     @vertices
   end
+
   def textures
     return @textures unless @textures.nil?
     _pos = @_io.pos
@@ -166,6 +174,7 @@ class Gp2carshape < Kaitai::Struct::Struct
     @_io.seek(_pos)
     @textures
   end
+
   def unks
     return @unks unless @unks.nil?
     _pos = @_io.pos

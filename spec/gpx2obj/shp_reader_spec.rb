@@ -61,7 +61,6 @@ RSpec.describe Gpx2Obj::ShpReader do
         puts content
       end
 
-
       # puts points.inspect
       # puts "--"
       # puts expected_points.inspect
@@ -84,16 +83,16 @@ RSpec.describe Gpx2Obj::ShpReader do
     end
   end
 
-  describe '#points_per_car' do
-    it 'returns 194 vertices with model1' do
+  describe "#points_per_car" do
+    it "returns 194 vertices with model1" do
       expect(subject.points_per_car(:model1).count).to eq(194)
     end
 
-    it 'returns 194 points with model2' do
+    it "returns 194 points with model2" do
       expect(subject.points_per_car(:model1).count).to eq(194)
     end
 
-    it 'does not return same points for model1 and model2' do
+    it "does not return same points for model1 and model2" do
       expect(subject.points_per_car(:model1)).to_not match_array(subject.points_per_car(:model2))
     end
   end
