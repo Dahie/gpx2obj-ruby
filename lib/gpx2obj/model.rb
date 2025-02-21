@@ -17,25 +17,29 @@ module Gpx2Obj
     end
 
     def vertex_ids_per_face(face)
-      puts face.inspect
-      face[:edgeList].map do |edge_id|
+
+      tex_co = texture_coordinates[face[:numl]].inspect
+      puts tex_co
+      face[:edgeList].each_with_index do |edge_id, index|
         aedge_id = edge_id.abs
         next if edge_id > 32000 # TODO hacky
 
         edge = edges[aedge_id]
 
         if edge_id.positive?
-          from_id = edge.from + 1
-          to_id = edge.to + 1
+          from_id = edge.from
+          to_id = edge.to+1
         else
-          from_id = edge.to + 1
-          to_id = edge.from + 1
+          from_id = edge.to
+          to_id = edge.from
         end
         from_uv_id = texture_index[from_id]
         to_uv_id = texture_index[to_id]
 
-        "#{from_id}/#{from_uv_id} #{to_id}/#{to_uv_id}"
-      end.compact.flatten.uniq
+        #puts from_uv_id.inspect
+
+        ["#{from_id+1}/#{from_uv_id}", "#{to_id+1}/#{to_uv_id}"]
+      end.flatten.compact.uniq
     end
 
     def write_debug
@@ -43,55 +47,6 @@ module Gpx2Obj
       File.write("./out/edges.csv", car.vertices.map(&:inspect).join("\n"))
       File.write("./out/points.csv", car.points.map(&:inspect).join("\n"))
       File.write("./out/vertices_m1.csv", car.vertices.map(&:inspect).join("\n"))
-    end
-
-    def debug
-      header = car.header
-
-      header.size8
-      num_scale = (header.scale_end - header.scale_begin) / 2
-      puts "Scales: #{num_scale}"
-      num_points = (header.vertex_begin - header.points_begin) / 8
-      num_unks = (header.file_end - header.vertex_end) / 2
-
-      puts "Points: #{num_points}"
-
-      num_vertices = (header.vertex_end - header.vertex_begin) / 4
-
-      puts "vertices: #{num_vertices}"
-      puts "Unks: #{num_unks}"
-
-      puts "---"
-
-      puts header.magic.inspect
-      puts header.id.inspect
-      puts header.scale_begin
-      puts header.scale_end
-      puts header.texture_begin
-      puts header.vertex_begin
-      puts header.vertex_end
-      puts header.points_begin
-      puts header.texture_end
-
-      puts "---"
-
-      puts Gpx2Obj::ShpReader::HEADER_LENGTH + (header.scale_begin - header.scale_begin) # scale begin
-      puts Gpx2Obj::ShpReader::HEADER_LENGTH + (header.scale_end - header.scale_begin) # scale end
-      puts Gpx2Obj::ShpReader::HEADER_LENGTH + (header.texture_begin - header.scale_begin) # texture begin
-      puts Gpx2Obj::ShpReader::HEADER_LENGTH + (header.texture_end - header.scale_begin) # texture end
-      puts Gpx2Obj::ShpReader::HEADER_LENGTH + (header.points_begin - header.scale_begin) # points begin
-      puts Gpx2Obj::ShpReader::HEADER_LENGTH + (header.vertex_begin - header.scale_begin) # vertex begin
-      puts Gpx2Obj::ShpReader::HEADER_LENGTH + (header.vertex_end - header.scale_begin) # vertex end
-      # puts Gpx2Obj::ShpReader::HEADER_LENGTH + (header.points_end - header.scale_begin) #points end
-
-      puts header.inspect
-
-      puts "-----"
-
-      # puts car.vertices.count
-      # car.vertices.each_with_index do |vertex, i|
-      #   puts "vertex #{i} - #{vertex.from}, #{vertex.to}, #{vertex.a}, #{vertex.b}"
-      # end
     end
 
     def write(file_path, writer)

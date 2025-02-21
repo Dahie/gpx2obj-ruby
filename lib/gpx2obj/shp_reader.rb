@@ -21,6 +21,7 @@ module Gpx2Obj
 
     def initialize(file_path)
       @file_path = file_path
+      texture_coordinates
     end
 
     def car
@@ -66,10 +67,8 @@ module Gpx2Obj
     end
 
     def texture_coordinates
-      return @data unless @data
-
-      file = File.open(TEXTURE_CFG_PATH)
-      @data = {}.tap do |data|
+      @texture_coordinates ||= {}.tap do |data|
+        file = File.open(TEXTURE_CFG_PATH)
         file.readlines.map(&:chomp).map(&:strip).each do |line|
           next if line.empty? || line.start_with?("//")
 
@@ -89,17 +88,15 @@ module Gpx2Obj
           end
         end
         uv_coordinates.uniq!
-        @data.each do |id, coordinates|
+        #puts uv_coordinates.inspect
+        data.each do |id, coordinates|
           coordinates.each do |co|
-            uv_index[index] = [] unless uv_index[index]
-            uv_index[index] << uv_coordinates.find_index(co)
+            uv_index[id] = [] unless uv_index[id]
+            uv_index[id] << uv_coordinates.find_index(co)
           end
         end
+        file.close
       end
-
-      file.close
-
-      data
     end
 
     private

@@ -5,7 +5,6 @@ module Gpx2Obj
     def initialize(model)
       @model = model
       @vertices = model.vertices
-      @faces = model.faces
     end
 
     def content
@@ -16,25 +15,20 @@ module Gpx2Obj
 
     def faces_content
       "usemtl Textured\n".tap do |content|
-        faces.each do |id, face|
+        model.faces.each do |id, face|
           next unless face[:edgeList]
 
           content << "# id #{face[:numl]}\n"
           vs = model.vertex_ids_per_face(face)
           content << "f #{vs.join(" ")}\n"
         end
-        content << "# #{faces.count} elements\n"
+        content << "# #{model.faces.count} elements\n"
       end
-    end
-
-    def vt_lookup
-      @vt_lookup ||= []
     end
 
     def texture_content
       "".tap do |content|
         model.texture_coordinates.each do |point|
-          content << "# face {id}\n"
           content << "vt #{point[0]} #{point[1]}\n"
         end
       end
@@ -42,7 +36,7 @@ module Gpx2Obj
 
     def vertices_content
       "".tap do |content|
-        vertices.each_with_index do |point, i|
+        model.vertices.each_with_index do |point, i|
           content << "# id #{i}\n"
           content << "v #{point.x.to_f * 0.1} #{point.z.to_f * 0.1} #{point.y.to_f * 0.1}\n"
         end
