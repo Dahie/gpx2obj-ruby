@@ -72,30 +72,31 @@ module Gpx2Obj
         file.readlines.map(&:chomp).map(&:strip).each do |line|
           next if line.empty? || line.start_with?("//")
 
+          puts line
+
           parts = line.split(",").map(&:strip).map(&:to_i)
-          index = parts[0]
+          face_id = parts[0]
           num = parts[1]
 
-          next if [0, 1].include?(index)
+          next if [0, 1].include?(face_id)
 
-          data[index] = [].tap do |coordinates|
-            num.times do |i|
-              u = parts[i + 2]
-              v = parts[i + 3]
+          data[face_id] = [].tap do |coordinates|
+            puts "num " + num.to_s
+            parts[2..].each_slice(2) do |u, v|
               coordinates << [u, v]
               uv_coordinates << [u, v]
             end
           end
+          file.close
         end
-        uv_coordinates.uniq!
-        #puts uv_coordinates.inspect
-        data.each do |id, coordinates|
+        #uv_coordinates.uniq!
+
+        data.each do |face_id, coordinates|
           coordinates.each do |co|
-            uv_index[id] = [] unless uv_index[id]
-            uv_index[id] << uv_coordinates.find_index(co)
+            uv_index[face_id] = [] unless uv_index[face_id]
+            uv_index[face_id] << uv_coordinates.find_index(co)
           end
         end
-        file.close
       end
     end
 

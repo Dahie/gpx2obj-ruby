@@ -42,21 +42,6 @@ RSpec.describe Gpx2Obj::ShpReader do
     let(:textures) { subject.model2.faces }
 
     it "has expected vertices values" do
-<<<<<<< HEAD
-      "".tap do |content|
-        vertices.each_with_index do |p, i|
-          next if p == expected_vertices[i]
-          content << "#{i} " + p.inspect + " - " + expected_vertices[i].inspect + "\n"
-        end
-        puts content
-      end
-
-      # puts points.inspect
-      # puts "--"
-      # puts expected_points.inspect
-
-=======
->>>>>>> fb116e5 (add texture cfg support)
       expect(vertices).to match_array(expected_vertices)
       expect(vertices).to eq(expected_vertices)
     end

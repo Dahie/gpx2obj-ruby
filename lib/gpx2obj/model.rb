@@ -17,29 +17,35 @@ module Gpx2Obj
     end
 
     def vertex_ids_per_face(face)
+      vertices = Array.new(face[:edgeList].count) do |index|
+        #puts index
+        edge_id = face[:edgeList][index]
+        #puts edge_id
 
-      tex_co = texture_coordinates[face[:numl]].inspect
-      puts tex_co
-      face[:edgeList].each_with_index do |edge_id, index|
-        aedge_id = edge_id.abs
         next if edge_id > 32000 # TODO hacky
 
-        edge = edges[aedge_id]
+        edge = edges[edge_id.abs]
 
         if edge_id.positive?
-          from_id = edge.from
+          from_id = edge.from+1
           to_id = edge.to+1
         else
-          from_id = edge.to
-          to_id = edge.from
+          from_id = edge.to+1
+          to_id = edge.from+1
         end
-        from_uv_id = texture_index[from_id]
-        to_uv_id = texture_index[to_id]
 
-        #puts from_uv_id.inspect
-
-        ["#{from_id+1}/#{from_uv_id}", "#{to_id+1}/#{to_uv_id}"]
+        [from_id, to_id]
       end.flatten.compact.uniq
+
+      if uv_indices = texture_index[face[:numl]]
+        vertices = Array.new(vertices.count) do |index|
+          vertex_id = vertices[index]
+          vt_id = uv_indices[index]
+          "#{vertex_id}/#{vt_id}"
+        end
+      end
+
+      return vertices
     end
 
     def write_debug
