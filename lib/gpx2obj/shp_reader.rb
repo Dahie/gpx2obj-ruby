@@ -17,7 +17,7 @@ module Gpx2Obj
     HEADER_LENGTH = 106
     OFFSET_NOSE = 31
     OFFSET_PTS = 194
-    TEXTURE_CFG_PATH = "texture.cfg"
+    TEXTURE_CFG_PATH = "assets/texture.cfg"
 
     def initialize(file_path)
       @file_path = file_path
@@ -89,7 +89,7 @@ module Gpx2Obj
           end
           file.close
         end
-        #uv_coordinates.uniq!
+        uv_coordinates.uniq!
 
         data.each do |face_id, coordinates|
           coordinates.each do |co|

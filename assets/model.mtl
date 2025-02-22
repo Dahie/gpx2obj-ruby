@@ -5,7 +5,7 @@ newmtl Textured
    d 1.0
    illum 2
    # the ambient texture map
-   #map_Ka lemur.tga
+   map_Ka 00-Williams.png
    
    # the diffuse texture map (most of the time, it will be the same as the
    # ambient texture map)
@@ -13,4 +13,11 @@ newmtl Textured
    
    # specular highlight component
    #map_Ns lemur_spec.tga
+
+newmtl Carbon
+   Ka 0.000 0.000 0.000
+   Kd 0.000 0.000 0.000
+   Ks 0.000 0.000 0.000
+   d 1.0
+   illum 1
    

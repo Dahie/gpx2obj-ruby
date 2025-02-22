@@ -41,11 +41,11 @@ module Gpx2Obj
         vertices = Array.new(vertices.count) do |index|
           vertex_id = vertices[index]
           vt_id = uv_indices[index]
-          "#{vertex_id}/#{vt_id}"
+          "#{vertex_id}/#{vt_id+1}"
         end
       end
 
-      return vertices
+      return vertices.reverse
     end
 
     def write_debug
