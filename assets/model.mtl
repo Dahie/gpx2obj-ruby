@@ -5,11 +5,11 @@ newmtl Textured
    d 1.0
    illum 2
    # the ambient texture map
-   map_Ka 00-Williams.png
+   map_Ka 00-RC-44.png
    
    # the diffuse texture map (most of the time, it will be the same as the
    # ambient texture map)
-   map_Kd 00-Williams.png
+   map_Kd 00-RC-44.png
    
    # specular highlight component
    #map_Ns lemur_spec.tga

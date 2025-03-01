@@ -6,7 +6,6 @@ module Gpx2Obj
 
     def initialize(model)
       @model = model
-      @vertices = model.vertices
     end
 
     def content
@@ -30,22 +29,22 @@ module Gpx2Obj
 
     def texture_content
       "".tap do |content|
-        model.texture_coordinates.each_with_index do |point, index|
-          content << "# id vt #{index+1}\n"
-          content << "vt #{point[0] / 256.0} #{-point[1] / 256.0}\n"
+        model.uv_coordinates.each_with_index do |point, index|
+          content << "# id vt #{index + 1}\n"
+          content << "vt #{point[0].to_f / 256.0} #{-point[1].to_f / 256.0}\n"
         end
-        content << "# #{model.texture_coordinates.count} elements\n"
+        content << "# #{model.uv_coordinates.count} elements\n"
       end
     end
 
     def vertices_content
       "".tap do |content|
         model.vertices.each_with_index do |point, i|
-          content << "# id v #{i+1}\n"
+          content << "# id v #{i + 1}\n"
           # we rotate the model along Y acess, otherwise it stands on nose-tip
           content << "v #{point.x.to_f * SCALE} #{point.z.to_f * SCALE} #{-point.y.to_f * SCALE}\n"
         end
-        content << "# #{vertices.count} elements\n"
+        content << "# #{model.vertices.count} elements\n"
       end
     end
   end

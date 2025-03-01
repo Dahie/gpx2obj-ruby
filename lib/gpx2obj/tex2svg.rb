@@ -1,3 +1,4 @@
+require_relative "../gpx2obj"
 require "victor"
 require "base64"
 include Victor
@@ -205,7 +206,20 @@ def png_to_base64(file)
   encoded.delete("\n")
 end
 
-def build_svg(data, background: true, exclusions: [])
+def draw_polygon(svg, id, surface)
+  points = surface.map { |coordinate| coordinate.join(",") }.join(" ")
+  svg.polygon points: points, fill: random_color_name, id: id, class: "face"
+end
+
+def draw_path(svg, id, surface)
+
+  d = [].tap do |d|
+    d = surface.each_with_index { |coordinate, i| d << "#{i == 0 ? 'M' : 'L'} #{coordinate[0]} #{coordinate[1]} " }
+  end
+  svg.path d:, fill: random_color_name, id:, class: "face"
+end
+
+def build_svg(uv_mapping, background: true, exclusions: [])
   total_width = 256
   total_height = 256
   cell_size = 1
@@ -215,7 +229,8 @@ def build_svg(data, background: true, exclusions: [])
   png_data = png_to_base64("assets/00-Williams.png")
   svg.image :x => 0, :y => 0, :width => total_width, :height => total_height, "xlink:href" => "data:image/png;base64,#{png_data}"
 
-  svg.css[".face"] = {opacity: 0.4}
+  svg.css[".face"] = {opacity: 0.6}
+  svg.css[".hidden"] = {display: "none"}
   svg.css[".cell"] = {stroke: :white, rx: (cell_size * 0.1).round}
 
   # svg.g do
@@ -230,17 +245,21 @@ def build_svg(data, background: true, exclusions: [])
   #   end
   # end
 
-  svg.g do
-    data.each do |id, surface|
-      next if exclusions.include?(id)
-      points = surface.map { |coordinate| coordinate.join(",") }.join(" ")
-      svg.polygon points: points, fill: random_color_name, id: id, class: "face"
+  uv_mapping.groups.each do |group|
+    svg.g(id: group["title"]) do
+      group["faces"].each do |id, face|
+        next if exclusions.include?(id)
+
+        #draw_polygon(svg, id, face)
+        draw_path(svg, id, face['uv'])
+      end
     end
   end
 
   svg
 end
 
-data = parse_texture_file("assets/texture.cfg")
-svg = build_svg(data, background: true, exclusions: [186])
+# data = parse_texture_file("assets/texture.cfg")
+uv_mapping = Gpx2Obj::UvMapping::YamlReader.new("assets/texture.cfg.yml")
+svg = build_svg(uv_mapping, background: true, exclusions: [186])
 svg.save "wireframe"

@@ -1,13 +1,13 @@
 module Gpx2Obj
   class Model
-    attr_reader :car, :vertices, :faces, :texture_coordinates, :texture_index
+    attr_reader :car, :vertices, :faces, :uv_coordinates, :uv_index
 
-    def initialize(car:, vertices:, faces:, texture_coordinates:, texture_index:)
+    def initialize(car:, vertices:, faces:, uv_mapping:)
       @car = car
       @vertices = vertices
       @faces = faces
-      @texture_coordinates = texture_coordinates
-      @texture_index = texture_index
+      @uv_coordinates = uv_mapping.uv_coordinates
+      @uv_index = uv_mapping.uv_index
 
       # write_debug
     end
@@ -18,34 +18,33 @@ module Gpx2Obj
 
     def vertex_ids_per_face(face)
       vertices = Array.new(face[:edgeList].count) do |index|
-        #puts index
         edge_id = face[:edgeList][index]
-        #puts edge_id
 
         next if edge_id > 32000 # TODO hacky
 
         edge = edges[edge_id.abs]
 
         if edge_id.positive?
-          from_id = edge.from+1
-          to_id = edge.to+1
+          from_id = edge.from + 1
+          to_id = edge.to + 1
         else
-          from_id = edge.to+1
-          to_id = edge.from+1
+          from_id = edge.to + 1
+          to_id = edge.from + 1
         end
 
         [from_id, to_id]
       end.flatten.compact.uniq
 
-      if uv_indices = texture_index[face[:numl]]
+      if uv_indices = uv_index[face[:numl]]
         vertices = Array.new(vertices.count) do |index|
+          puts "#{index} #{face[:numl]}"
           vertex_id = vertices[index]
           vt_id = uv_indices[index]
-          "#{vertex_id}/#{vt_id+1}"
+          "#{vertex_id}/#{vt_id + 1}"
         end
       end
 
-      return vertices.reverse
+      vertices.reverse
     end
 
     def write_debug

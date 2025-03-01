@@ -17,6 +17,7 @@ module Gpx2Obj
 
         case line[0]
         when "#"
+          # no-op
         when "v"
           vertices << Vertex.new(vertex_count, values[1].to_f, values[2].to_f, values[3].to_f)
           vertex_count += 1
@@ -25,6 +26,5 @@ module Gpx2Obj
         end
       end
     end
-
   end
 end

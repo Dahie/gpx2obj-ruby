@@ -4,7 +4,8 @@ require "yaml"
 RSpec.describe Gpx2Obj::ShpReader do
   let(:input_shp) { "spec/fixtures/carshape.shp" }
   let(:expected_values) { YAML.load_file("spec/fixtures/carshape.yaml") }
-  subject { described_class.new(input_shp) }
+  let(:uv_mapping) { double(Gpx2Obj::UvMapping, uv_coordinates: [], uv_index: []) }
+  subject { described_class.new(input_shp, uv_mapping) }
 
   describe "#points_count" do
     it do

@@ -11,7 +11,7 @@ module Gpx2Obj
   # This reader serves as an interface to "modern" terminology
   # used in the rest of the project.
   class ShpReader
-    attr_accessor :file_path
+    attr_accessor :file_path, :uv_mapping
 
     DEF_CAR_START = 0x14C4A8
     HEADER_LENGTH = 106
@@ -19,9 +19,9 @@ module Gpx2Obj
     OFFSET_PTS = 194
     TEXTURE_CFG_PATH = "assets/texture.cfg"
 
-    def initialize(file_path)
+    def initialize(file_path, uv_mapping)
       @file_path = file_path
-      texture_coordinates
+      @uv_mapping = uv_mapping
     end
 
     def car
@@ -32,16 +32,14 @@ module Gpx2Obj
       @model1 ||= Model.new(car: car,
         vertices: translate_points(:model1),
         faces: read_textures(car.textures),
-        texture_coordinates: uv_coordinates,
-        texture_index: uv_index)
+        uv_mapping: uv_mapping)
     end
 
     def model2
       @model2 ||= Model.new(car: car,
         vertices: translate_points(:model2),
         faces: read_textures(car.textures),
-        texture_coordinates: uv_coordinates,
-        texture_index: uv_index)
+        uv_mapping: uv_mapping)
     end
 
     def points_count
@@ -56,48 +54,6 @@ module Gpx2Obj
       return car.points[points_per_car_count..] if model == :model2
 
       car.points[0..points_per_car_count - 1]
-    end
-
-    def uv_index
-      @uv_index ||= {}
-    end
-
-    def uv_coordinates
-      @uv_coordinates ||= []
-    end
-
-    def texture_coordinates
-      @texture_coordinates ||= {}.tap do |data|
-        file = File.open(TEXTURE_CFG_PATH)
-        file.readlines.map(&:chomp).map(&:strip).each do |line|
-          next if line.empty? || line.start_with?("//")
-
-          puts line
-
-          parts = line.split(",").map(&:strip).map(&:to_i)
-          face_id = parts[0]
-          num = parts[1]
-
-          next if [0, 1].include?(face_id)
-
-          data[face_id] = [].tap do |coordinates|
-            puts "num " + num.to_s
-            parts[2..].each_slice(2) do |u, v|
-              coordinates << [u, v]
-              uv_coordinates << [u, v]
-            end
-          end
-          file.close
-        end
-        uv_coordinates.uniq!
-
-        data.each do |face_id, coordinates|
-          coordinates.each do |co|
-            uv_index[face_id] = [] unless uv_index[face_id]
-            uv_index[face_id] << uv_coordinates.find_index(co)
-          end
-        end
-      end
     end
 
     private

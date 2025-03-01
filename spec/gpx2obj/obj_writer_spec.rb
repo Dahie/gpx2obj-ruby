@@ -1,6 +1,7 @@
 require_relative "../spec_helper"
 
 RSpec.describe Gpx2Obj::ObjWriter do
+  let(:uv_mapping) { double(Gpx2Obj::UvMapping, uv_coordinates: [], uv_index: []) }
   let(:model) { double("Model", faces:, vertices:) }
   let(:vertices) do
     [
@@ -27,6 +28,7 @@ RSpec.describe Gpx2Obj::ObjWriter do
   describe "#content" do
     it "generates correct content format" do
       expected_content = <<~CONTENT
+        mtllib model.mtl
         # id 0
         v 1.0 3.0 2.0
         # id 1
