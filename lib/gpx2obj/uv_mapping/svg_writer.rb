@@ -1,12 +1,59 @@
 require "victor"
 require "base64"
-include Victor
 
 module Gpx2Obj
   module UvMapping
     class SvgWriter
-      WIREFRAME_WIDTH=256
-      WIREFRAME_HEIGHT=256
+      WIREFRAME_WIDTH = 256
+      WIREFRAME_HEIGHT = 256
+
+      attr_reader :uv_mapping
+
+      def initialize(uv_mapping)
+        @uv_mapping = uv_mapping
+        @svg = Victor::SVG.new(:viewBox => "0 0 #{WIREFRAME_WIDTH} #{WIREFRAME_HEIGHT}", "xmlns:xlink" => "http://www.w3.org/1999/xlink").tap do |svg|
+          svg.rect x: 0, y: 0, width: WIREFRAME_WIDTH, height: WIREFRAME_HEIGHT, fill: "#84A584"
+        end
+      end
+
+      def build_svg(background: true, exclusions: [])
+        draw_image(@svg, "assets/00-RC-44.png")
+        draw_image(@svg, "assets/00-Williams.png")
+        draw_image(@svg, "assets/27-Ferrari.png")
+        draw_image(@svg, "assets/05-Benetton.png")
+
+        @svg.css[".face"] = {opacity: 0.4}
+
+        uv_mapping.groups.each do |group|
+          @svg.g(id: group["title"]) do
+            group["faces"].each do |id, face|
+              next if exclusions.include?(id)
+
+              draw_path(@svg, id, face["uv"])
+            end
+          end
+        end
+
+        @svg
+      end
+
+      private
+
+      def draw_path(svg, id, surface)
+        d = [].tap do |d|
+          surface.each_with_index do |coordinate, i|
+            d << "#{(i == 0) ? "M" : "L"} #{coordinate[0].to_f + 0.5} #{coordinate[1].to_f + 0.5} "
+          end
+        end
+        d << "Z" # adds closing edge back to start
+
+        svg.path d:, fill: random_color_name, id:, class: "face"
+      end
+
+      def draw_image(svg, path, hidden = true)
+        png_data = png_to_base64(path)
+        svg.image :x => 0, :y => 0, :width => WIREFRAME_WIDTH, :height => WIREFRAME_HEIGHT, :class => hidden && "hidden", "xlink:href" => "data:image/png;base64,#{png_data}"
+      end
 
       def random_color_name
         %w[black
@@ -181,58 +228,6 @@ module Gpx2Obj
         encoded = Base64.encode64(data)
         encoded.delete("\n")
       end
-
-      def build_svg(data, background: true, exclusions: [])
-        cell_size = 1
-
-        svg = SVG.new :viewBox => "0 0 #{WIREFRAME_WIDTH} #{WIREFRAME_HEIGHT}", "xmlns:xlink" => "http://www.w3.org/1999/xlink"
-        svg.rect x: 0, y: 0, width: WIREFRAME_WIDTH, height: WIREFRAME_HEIGHT, fill: "#84A584"
-        png_data = png_to_base64("00-Williams.png")
-        svg.image :x => 0, :y => 0, width: WIREFRAME_WIDTH, :height => WIREFRAME_HEIGHT, "xlink:href" => "data:image/png;base64,#{png_data}"
-
-        svg.css[".face"] = {opacity: 0.4}
-        svg.css[".cell"] = {stroke: :white, rx: (cell_size * 0.1).round}
-
-        # svg.g do
-        #   WIREFRAME_WIDTH.times do |col|
-        #     WIREFRAME_HEIGHT.times do |row|
-        #       x = col * cell_size
-        #       y = row * cell_size
-        #       svg.rect class: "cell", x: x, y: y,
-        #         width: cell_size, height: cell_size,
-        #         fill: random_color_name
-        #     end
-        #   end
-        # end
-
-        svg.g do
-          data.each do |id, surface|
-            next if exclusions.include?(id)
-
-
-            #draw_polygon(svg, id, surface)
-            draw_path(svg, id, surface)
-          end
-        end
-
-        svg
-      end
-
-      def draw_polygon(svg, id, surface)
-        points = surface.map { |coordinate| coordinate.join(",") }.join(" ")
-        svg.polygon points: points, fill: random_color_name, id: id, class: "face"
-      end
-
-      def draw_path(svg, id, surface)
-
-        d = [].tap do |d|
-          d = surface.each_with_index { |coordinate, i| d << "#{i == 0 ? 'M' ? 'L'} #{coordinate[0]} #{coordinate[1]} " }
-        end
-        svg.path d:, fill: random_color_name, id:, class: "face"
-      end
     end
   end
 end
-
-svg = build_svg(data, background: true, exclusions: [186])
-svg.save "wireframe"

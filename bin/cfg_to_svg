@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+require_relative "../lib/gpx2obj"
+
+uv_mapping = Gpx2Obj::UvMapping::YamlReader.new("assets/texture.cfg.yml")
+svg = Gpx2Obj::UvMapping::SvgWriter.new(uv_mapping).build_svg(background: true, exclusions: [186])
+svg.save "wireframe-offset2"

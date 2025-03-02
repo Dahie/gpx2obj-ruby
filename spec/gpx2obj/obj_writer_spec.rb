@@ -1,8 +1,8 @@
 require_relative "../spec_helper"
 
 RSpec.describe Gpx2Obj::ObjWriter do
-  let(:uv_mapping) { double(Gpx2Obj::UvMapping, uv_coordinates: [], uv_index: []) }
-  let(:model) { double("Model", faces:, vertices:) }
+  let(:uv_mapping) { double(Gpx2Obj::UvMapping, uv_coordinates: [], uv_index: [], uv_offset: 0.0) }
+  let(:model) { double("Model", faces:, vertices:, uv_mapping:) }
   let(:vertices) do
     [
       double("Point", x: 10, y: 20, z: 30),
@@ -17,13 +17,6 @@ RSpec.describe Gpx2Obj::ObjWriter do
   end
 
   subject { described_class.new(model) }
-
-  describe "#initialize" do
-    it "assigns car, vertices, and faces" do
-      expect(subject.vertices).to eq(vertices)
-      expect(subject.faces).to eq(faces)
-    end
-  end
 
   describe "#content" do
     it "generates correct content format" do

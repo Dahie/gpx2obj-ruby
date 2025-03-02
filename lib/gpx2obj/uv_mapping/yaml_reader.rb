@@ -11,6 +11,10 @@ module Gpx2Obj
         @faces ||= groups.collect { |g| g["faces"] }.flatten[1..].inject(:merge)
       end
 
+      def uv_offset
+        0.5
+      end
+
       private
 
       def parse_file(data)

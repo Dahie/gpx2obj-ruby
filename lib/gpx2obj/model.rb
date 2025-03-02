@@ -1,6 +1,6 @@
 module Gpx2Obj
   class Model
-    attr_reader :car, :vertices, :faces, :uv_coordinates, :uv_index
+    attr_reader :car, :vertices, :faces, :uv_coordinates, :uv_index, :uv_offset
 
     def initialize(car:, vertices:, faces:, uv_mapping:)
       @car = car
@@ -8,6 +8,7 @@ module Gpx2Obj
       @faces = faces
       @uv_coordinates = uv_mapping.uv_coordinates
       @uv_index = uv_mapping.uv_index
+      @uv_offset = uv_mapping.uv_offset
 
       # write_debug
     end
@@ -35,9 +36,8 @@ module Gpx2Obj
         [from_id, to_id]
       end.flatten.compact.uniq
 
-      if uv_indices = uv_index[face[:numl]]
+      if (uv_indices = uv_index[face[:numl]])
         vertices = Array.new(vertices.count) do |index|
-          puts "#{index} #{face[:numl]}"
           vertex_id = vertices[index]
           vt_id = uv_indices[index]
           "#{vertex_id}/#{vt_id + 1}"

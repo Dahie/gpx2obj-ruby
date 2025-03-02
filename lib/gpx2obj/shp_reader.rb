@@ -114,7 +114,7 @@ module Gpx2Obj
       count = 0
       buffer.length
 
-      textureData = {}
+      texture_data = {}
 
       187.times do
         numl = buffer.getbyte(count)
@@ -124,7 +124,7 @@ module Gpx2Obj
         cmd = buffer.getbyte(count)
         count += 1
 
-        textureData[idx] = {
+        texture_data[idx] = {
           numl: numl,
           numh: numh,
           cmd: cmd,
@@ -134,49 +134,49 @@ module Gpx2Obj
         case cmd
         when 0x80, 0x90
           7.times do
-            textureData[idx][:Args] << buffer.getbyte(count)
+            texture_data[idx][:Args] << buffer.getbyte(count)
             count += 1
           end
         when 0x13
           15.times do
-            textureData[idx][:Args] << buffer.getbyte(count)
+            texture_data[idx][:Args] << buffer.getbyte(count)
             count += 1
           end
-          if textureData[idx][:Args][3] == 0x80
+          if texture_data[idx][:Args][3] == 0x80
             2.times do
-              textureData[idx][:Args] << buffer.getbyte(count)
+              texture_data[idx][:Args] << buffer.getbyte(count)
               count += 1
             end
           end
         when 0x18, 0x11, 0x1a, 0x16, 0x17, 0x12, 0x15, 0x10, 0x0
           11.times do
-            textureData[idx][:Args] << buffer.getbyte(count)
+            texture_data[idx][:Args] << buffer.getbyte(count)
             count += 1
           end
-          until textureData[idx][:Args][-2] == 0 && textureData[idx][:Args][-1] == 0
+          until texture_data[idx][:Args][-2] == 0 && texture_data[idx][:Args][-1] == 0
             2.times do
-              textureData[idx][:Args] << buffer.getbyte(count)
+              texture_data[idx][:Args] << buffer.getbyte(count)
               count += 1
             end
           end
         when 0xa
           5.times do
-            textureData[idx][:Args] << buffer.getbyte(count)
+            texture_data[idx][:Args] << buffer.getbyte(count)
             count += 1
           end
-          until textureData[idx][:Args][-2] == 0 && textureData[idx][:Args][-1] == 0
+          until texture_data[idx][:Args][-2] == 0 && texture_data[idx][:Args][-1] == 0
             2.times do
-              textureData[idx][:Args] << buffer.getbyte(count)
+              texture_data[idx][:Args] << buffer.getbyte(count)
               count += 1
             end
           end
         end
 
-        textureData[idx][:numArgs] = textureData[idx][:Args].size
-        parse_texture(textureData[idx])
+        texture_data[idx][:numArgs] = texture_data[idx][:Args].size
+        parse_texture(texture_data[idx])
         idx += 1
       end
-      textureData
+      texture_data
     end
 
     def parse_texture(texture_cmd)

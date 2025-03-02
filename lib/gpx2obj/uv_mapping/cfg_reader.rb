@@ -1,6 +1,10 @@
 module Gpx2Obj
   module UvMapping
     class CfgReader < BaseReader
+      def uv_offset
+        0.0
+      end
+
       private
 
       def parse_file(data)

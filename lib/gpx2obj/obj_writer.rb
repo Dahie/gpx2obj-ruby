@@ -1,6 +1,6 @@
 module Gpx2Obj
   class ObjWriter
-    attr_reader :model, :vertices, :faces
+    attr_reader :model
 
     SCALE = 0.01
 
@@ -31,7 +31,7 @@ module Gpx2Obj
       "".tap do |content|
         model.uv_coordinates.each_with_index do |point, index|
           content << "# id vt #{index + 1}\n"
-          content << "vt #{point[0].to_f / 256.0} #{-point[1].to_f / 256.0}\n"
+          content << "vt #{(point[0].to_f / 256.0) + model.uv_offset} #{(-point[1].to_f / 256.0) - model.uv_offset}\n"
         end
         content << "# #{model.uv_coordinates.count} elements\n"
       end
