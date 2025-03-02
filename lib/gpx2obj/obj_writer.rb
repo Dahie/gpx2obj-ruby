@@ -1,43 +1,50 @@
 module Gpx2Obj
   class ObjWriter
-    attr_reader :model, :vertices, :faces
+    attr_reader :model
+
+    SCALE = 0.01
 
     def initialize(model)
       @model = model
-      @vertices = model.vertices
-      @faces = model.faces
     end
 
     def content
-      "#{vertices_content}\n#{faces_content}"
+      "mtllib model.mtl\n\n#{vertices_content}\n#{texture_content}\n#{faces_content}"
     end
 
     private
 
     def faces_content
-      "usemtl white\n".tap do |content|
-        faces.each do |id, face|
+      "usemtl Textured\n".tap do |content|
+        model.faces.each do |id, face|
           next unless face[:edgeList]
 
+          content << "# id f #{face[:numl]}\n"
           vs = model.vertex_ids_per_face(face)
-          # vs.each do |v|
-          #   puts vertices[v].inspect
-          # end
-
-          content << "# id #{id}\n"
-          content << "f #{vs.map { |v| v + 1 }.join(" ")}\n"
+          content << "f #{vs.join(" ")}\n"
         end
-        content << "# #{faces.count} elements\n"
+        content << "# #{model.faces.count} elements\n"
+      end
+    end
+
+    def texture_content
+      "".tap do |content|
+        model.uv_coordinates.each_with_index do |point, index|
+          content << "# id vt #{index + 1}\n"
+          content << "vt #{(point[0].to_f + model.uv_offset) / 256.0} #{(-point[1].to_f - model.uv_offset) / 256.0}\n"
+        end
+        content << "# #{model.uv_coordinates.count} elements\n"
       end
     end
 
     def vertices_content
       "".tap do |content|
-        vertices.each_with_index do |point, i|
-          content << "# id #{i}\n"
-          content << "v #{point.x.to_f * 0.1} #{point.z.to_f * 0.1} #{point.y.to_f * 0.1}\n"
+        model.vertices.each_with_index do |point, i|
+          content << "# id v #{i + 1}\n"
+          # we rotate the model along Y acess, otherwise it stands on nose-tip
+          content << "v #{point.x.to_f * SCALE} #{point.z.to_f * SCALE} #{-point.y.to_f * SCALE}\n"
         end
-        content << "# #{vertices.count} vertices\n"
+        content << "# #{model.vertices.count} elements\n"
       end
     end
   end

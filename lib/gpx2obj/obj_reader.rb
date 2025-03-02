@@ -17,22 +17,14 @@ module Gpx2Obj
 
         case line[0]
         when "#"
+          # no-op
         when "v"
           vertices << Vertex.new(vertex_count, values[1].to_f, values[2].to_f, values[3].to_f)
           vertex_count += 1
         when "f"
-          puts line
-          puts values.inspect
-          faces << values[1..-1].map(&:to_i)
+          faces << values[1..].map(&:to_i)
         end
       end
-    end
-
-    def statistics
-      puts vertices.select { |v| v.y > 0 }.count
-      puts vertices.select { |v| v.y < 0 }.count
-      puts faces.inspect
-      puts faces.select { |f| puts f if f.map { |ff| vertices[ff] }.compact.empty? }
     end
   end
 end

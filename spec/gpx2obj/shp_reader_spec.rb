@@ -4,7 +4,8 @@ require "yaml"
 RSpec.describe Gpx2Obj::ShpReader do
   let(:input_shp) { "spec/fixtures/carshape.shp" }
   let(:expected_values) { YAML.load_file("spec/fixtures/carshape.yaml") }
-  subject { described_class.new(input_shp) }
+  let(:uv_mapping) { double(Gpx2Obj::UvMapping, uv_coordinates: [], uv_index: [], uv_offset: 0.0) }
+  subject { described_class.new(input_shp, uv_mapping) }
 
   describe "#points_count" do
     it do
@@ -18,17 +19,6 @@ RSpec.describe Gpx2Obj::ShpReader do
     let(:textures) { subject.model1.faces }
 
     it "has expected points values" do
-      # "".tap do |content|
-      #   points.each_with_index do |p, i|
-      #     next if p == expected_points[i]
-      #     content << "#{i} " + p.inspect + " - " + expected_points[i].inspect + "\n"
-      #   end
-      # end
-
-      # puts points.inspect
-      # puts "--"
-      # puts expected_points.inspect
-
       expect(points).to match_array(expected_points)
       expect(points).to eq(expected_points)
     end
@@ -53,18 +43,6 @@ RSpec.describe Gpx2Obj::ShpReader do
     let(:textures) { subject.model2.faces }
 
     it "has expected vertices values" do
-      "".tap do |content|
-        vertices.each_with_index do |p, i|
-          next if p == expected_vertices[i]
-          content << "#{i} " + p.inspect + " - " + expected_vertices[i].inspect + "\n"
-        end
-        puts content
-      end
-
-      # puts points.inspect
-      # puts "--"
-      # puts expected_points.inspect
-
       expect(vertices).to match_array(expected_vertices)
       expect(vertices).to eq(expected_vertices)
     end

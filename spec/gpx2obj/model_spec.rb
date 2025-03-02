@@ -22,14 +22,16 @@ RSpec.describe Gpx2Obj::Model do
       OpenStruct.new(from: 1, to: 2)
     ]
   end
+  let(:uv_mapping) { double(Gpx2Obj::UvMapping, uv_coordinates: [], uv_index: [], uv_offset: 0.0) }
 
-  subject { described_class.new(car:, vertices:, faces:) }
+  subject { described_class.new(car:, vertices:, faces:, uv_mapping:) }
 
   describe "#initialize" do
     it "assigns car, vertices, and faces" do
       expect(subject.car).to eq(car)
       expect(subject.vertices).to eq(vertices)
       expect(subject.faces).to eq(faces)
+      expect(subject.uv_mapping).to eq(uv_mapping)
     end
   end
 

@@ -11,15 +11,17 @@ module Gpx2Obj
   # This reader serves as an interface to "modern" terminology
   # used in the rest of the project.
   class ShpReader
-    attr_accessor :file_path
+    attr_accessor :file_path, :uv_mapping
 
     DEF_CAR_START = 0x14C4A8
     HEADER_LENGTH = 106
     OFFSET_NOSE = 31
     OFFSET_PTS = 194
+    TEXTURE_CFG_PATH = "assets/texture.cfg"
 
-    def initialize(file_path)
+    def initialize(file_path, uv_mapping)
       @file_path = file_path
+      @uv_mapping = uv_mapping
     end
 
     def car
@@ -29,13 +31,15 @@ module Gpx2Obj
     def model1
       @model1 ||= Model.new(car: car,
         vertices: translate_points(:model1),
-        faces: read_textures(car.textures))
+        faces: read_textures(car.textures),
+        uv_mapping: uv_mapping)
     end
 
     def model2
       @model2 ||= Model.new(car: car,
         vertices: translate_points(:model2),
-        faces: read_textures(car.textures))
+        faces: read_textures(car.textures),
+        uv_mapping: uv_mapping)
     end
 
     def points_count
@@ -47,10 +51,6 @@ module Gpx2Obj
     end
 
     def points_per_car(model = :model1)
-      car.points[points_per_car_count..].each_with_index do |p, i|
-        p2 = car.points[0..points_per_car_count][i]
-        puts(p.inspect, p2.inspect, i) if p2.x != p.x || p2.y != p.y || p2.z != p.z
-      end
       return car.points[points_per_car_count..] if model == :model2
 
       car.points[0..points_per_car_count - 1]
@@ -70,7 +70,6 @@ module Gpx2Obj
 
         if pointxyz.z > 0x8000
           pointxyz.z = -(0x10000 - z)
-          puts z, pointxyz.z
         end
 
         if x < 0x8000
@@ -115,7 +114,7 @@ module Gpx2Obj
       count = 0
       buffer.length
 
-      textureData = {}
+      texture_data = {}
 
       187.times do
         numl = buffer.getbyte(count)
@@ -125,62 +124,59 @@ module Gpx2Obj
         cmd = buffer.getbyte(count)
         count += 1
 
-        textureData[idx] = {
+        texture_data[idx] = {
           numl: numl,
           numh: numh,
           cmd: cmd,
           Args: []
         }
 
-        # puts textureData[idx]
-
         case cmd
         when 0x80, 0x90
           7.times do
-            textureData[idx][:Args] << buffer.getbyte(count)
+            texture_data[idx][:Args] << buffer.getbyte(count)
             count += 1
           end
         when 0x13
           15.times do
-            textureData[idx][:Args] << buffer.getbyte(count)
+            texture_data[idx][:Args] << buffer.getbyte(count)
             count += 1
           end
-          if textureData[idx][:Args][3] == 0x80
+          if texture_data[idx][:Args][3] == 0x80
             2.times do
-              textureData[idx][:Args] << buffer.getbyte(count)
+              texture_data[idx][:Args] << buffer.getbyte(count)
               count += 1
             end
           end
         when 0x18, 0x11, 0x1a, 0x16, 0x17, 0x12, 0x15, 0x10, 0x0
           11.times do
-            textureData[idx][:Args] << buffer.getbyte(count)
+            texture_data[idx][:Args] << buffer.getbyte(count)
             count += 1
           end
-          until textureData[idx][:Args][-2] == 0 && textureData[idx][:Args][-1] == 0
+          until texture_data[idx][:Args][-2] == 0 && texture_data[idx][:Args][-1] == 0
             2.times do
-              textureData[idx][:Args] << buffer.getbyte(count)
+              texture_data[idx][:Args] << buffer.getbyte(count)
               count += 1
             end
           end
         when 0xa
           5.times do
-            textureData[idx][:Args] << buffer.getbyte(count)
+            texture_data[idx][:Args] << buffer.getbyte(count)
             count += 1
           end
-          until textureData[idx][:Args][-2] == 0 && textureData[idx][:Args][-1] == 0
+          until texture_data[idx][:Args][-2] == 0 && texture_data[idx][:Args][-1] == 0
             2.times do
-              textureData[idx][:Args] << buffer.getbyte(count)
+              texture_data[idx][:Args] << buffer.getbyte(count)
               count += 1
             end
           end
         end
 
-        textureData[idx][:numArgs] = textureData[idx][:Args].size
-        parse_texture(textureData[idx])
-        # puts textureData[idx][:edgeList].inspect
+        texture_data[idx][:numArgs] = texture_data[idx][:Args].size
+        parse_texture(texture_data[idx])
         idx += 1
       end
-      textureData
+      texture_data
     end
 
     def parse_texture(texture_cmd)
