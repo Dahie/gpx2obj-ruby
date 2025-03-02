@@ -9,8 +9,6 @@ module Gpx2Obj
       @uv_coordinates = uv_mapping.uv_coordinates
       @uv_index = uv_mapping.uv_index
       @uv_offset = uv_mapping.uv_offset
-
-      # write_debug
     end
 
     def edges
@@ -45,13 +43,6 @@ module Gpx2Obj
       end
 
       vertices.reverse
-    end
-
-    def write_debug
-      File.write("./out/scales.csv", car.scales.map(&:inspect).join("\n"))
-      File.write("./out/edges.csv", car.vertices.map(&:inspect).join("\n"))
-      File.write("./out/points.csv", car.points.map(&:inspect).join("\n"))
-      File.write("./out/vertices_m1.csv", car.vertices.map(&:inspect).join("\n"))
     end
 
     def write(file_path, writer)

@@ -21,9 +21,7 @@ module Gpx2Obj
               group.css("path").each do |path|
                 face_id = (path["serif:id"] || path["id"].delete("_")).to_i
 
-                puts path["d"]
                 uv = path["d"].scan(/([\d\.]+)[ ,]+([\d\.]+)/).map { |uv| uv.map(&:to_f) }
-                puts uv.inspect
                 faces[face_id.to_i] = {"count" => uv.count, "uv" => uv}
               end
             end

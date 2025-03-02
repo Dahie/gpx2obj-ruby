@@ -52,22 +52,22 @@
   </g>
   <g id="top of thigh space">
     <path d="M 98.5 30.5 L 59.5 30.5 L 59.5 24.5 L 98.5 23.5" fill="lavender" id="16" class="face" style=""/>
-    <path d="M 98.5 36.5  L 59.5 36.5  L 59.5 30.5  L 98.5 30.5 " fill="purple" id="17" class="face"/>
-    <path d="M 98.5 43.5 L 59.5 42.5 L 59.5 36.5 L 98.5 36.5" fill="maroon" id="18" class="face"/>
+    <path d="M 98.5 37.5 L 59.5 37.5 L 59.5 30.5 L 98.5 30.5" fill="purple" id="17" class="face"/>
+    <path d="M 98.5 43.5 L 59.5 42.5 L 59.5 37.5 L 98.5 37.5" fill="maroon" id="18" class="face"/>
   </g>
   <g id="top of calf space, adjust 59 and 38 if too short!">
-    <path d="M 59.5 30.5 L 38.5 30.5 L 38.5 26.5 L 59.5 24.5" fill="lightcyan" id="19" class="face"/>
-    <path d="M 59.5 37.5 L 38.5 37.5 L 38.5 30.5 L 59.5 30.5" fill="aqua" id="20" class="face"/>
-    <path d="M 59.5 42.5 L 38.5 40.5 L 38.5 37.5 L 59.5 37.5" fill="crimson" id="21" class="face"/>
+    <path d="M 59.5 30.5 L 37.5 30.5 L 37.5 26.5 L 59.5 24.5" fill="lightcyan" id="19" class="face"/>
+    <path d="M 59.5 37.5 L 37.5 37.5 L 37.5 30.5 L 59.5 30.5" fill="aqua" id="20" class="face"/>
+    <path d="M 59.5 42.5 L 37.5 40.5 L 37.5 37.5 L 59.5 37.5" fill="crimson" id="21" class="face"/>
   </g>
   <g id="top of nose cone">
-    <path d="M 38.5 37.5 L 5.5 37.5 L 5.5 30.5 L 38.5 30.5" fill="snow" id="22" class="face"/>
-    <path d="M 38.5 30.5 L 5.5 30.5 L 38.5 26.5" fill="white" id="23" class="face"/>
-    <path d="M 38.5 40.5 L 5.5 37.5 L 38.5 37.5" fill="olive" id="24" class="face"/>
+    <path d="M 37.5 37.5 L 5.5 37.5 L 5.5 30.5 L 37.5 30.5" fill="snow" id="22" class="face"/>
+    <path d="M 37.5 30.5 L 5.5 30.5 L 37.5 26.5" fill="white" id="23" class="face"/>
+    <path d="M 37.5 40.5 L 5.5 37.5 L 37.5 37.5" fill="olive" id="24" class="face"/>
   </g>
   <g id="sides of nose cone">
-    <path d="M 242.5 161.5 L 208.5 161.5 L 208.5 144.5" fill="aqua" id="25" class="face"/>
-    <path d="M 50.5 113.5 L 16.5 113.5 L 50.5 96.5" fill="darkgrey" id="26" class="face"/>
+    <path d="M 242.5 161.5 L 211.5 161.5 L 211.5 146.5" fill="aqua" id="25" class="face"/>
+    <path d="M 47.5 113.5 L 16.5 113.5 L 47.5 98.5" fill="darkgrey" id="26" class="face"/>
   </g>
   <g id="front right side of cockpit">
     <path d="M 147.5 138.5 L 136.5 144.5 L 137.5 141.5" fill="silver" id="27" class="face"/>
@@ -82,21 +82,21 @@
     <path d="M 147.5 161.5 L 136.5 163.5 L 136.5 144.5 L 147.5 138.5" fill="dimgrey" id="30" class="face"/>
   </g>
   <g id="just infront of driver">
-    <path d="M 110.5 42.5 L 98.5 43.5 L 98.5 36.5" fill="sienna" id="31" class="face"/>
-    <path d="M 110.5 24.5 L 98.5 30.5 L 98.5 23.5" fill="darkgrey" id="32" class="face"/>
+    <path d="M 109.5 24.5 L 98.5 30.5 L 98.5 23.5" fill="sienna" id="31" class="face" style=""/>
+    <path d="M 109.5 42.5 L 98.5 43.5 L 98.5 37.5" fill="darkgrey" id="32" class="face" style=""/>
   </g>
   <g id="air vent">
     <path d="M 213.5 56.5  L 222.5 56.5  L 224.5 67.5  L 211.5 67.5 " fill="midnightblue" id="33" class="face"/>
     <path d="M 211.5 67.5  L 224.5 67.5  L 230.5 82.5  L 205.5 82.5 " fill="palegreen" id="34" class="face"/>
   </g>
   <g id="Front Right wing vertical">
-    <path d="M 219.5 136.5 L 219.5 148.5 L 246.5 148.5 L 246.5 142.5" fill="darkgoldenrod" id="35" class="face"/>
+    <path d="M 0.5 243.5 L 0.5 255.5 L 27.5 255.5 L 27.5 249.5" fill="darkgoldenrod" id="35" class="face"/>
   </g>
   <g id="Front Left wing vertical">
     <path d="M 0.5 238.5 L 1.5 243.5 L 26.5 243.5 L 25.5 233.5" fill="powderblue" id="37" class="face"/>
   </g>
   <g id="front wind sides">
-    <path d="M 26.5 254.5 L 1.5 254.5 L 1.5 242.5 L 26.5 249.5" fill="khaki" id="36" class="face"/>
+    <path d="M 246.5 148.5 L 219.5 148.5 L 219.5 136.5 L 246.5 142.5" fill="khaki" id="36" class="face"/>
     <path d="M 54.5 130.5 L 27.5 130.5 L 27.5 124.5 L 54.5 118.5" fill="darkmagenta" id="38" class="face"/>
   </g>
   <g id="Right side of air pod">
@@ -125,7 +125,7 @@
     <path d="M 190.5 93.5 L 163.5 93.5 L 163.5 80.5" fill="snow" id="51" class="face"/>
   </g>
   <g id="Steering wheel">
-    <path d="M 130.5 117.5  L 130.5 137.5  L 119.5 131.5  L 119.5 123.5 " fill="navy" id="52" class="face"/>
+    <path d="M 131.5 117.5 L 131.5 137.5 L 119.5 131.5 L 119.5 123.5" fill="navy" id="52" class="face"/>
   </g>
   <g id="Driver's body">
     <path d="M 157.5 117.5  L 157.5 137.5  L 131.5 137.5  L 131.5 117.5 " fill="indianred" id="53" class="face"/>
@@ -133,12 +133,12 @@
     <path d="M 62.5 3.5  L 32.5 3.5  L 32.5 0.5  L 62.5 0.5 " fill="lightcyan" id="55" class="face"/>
   </g>
   <g id="Right side of nose">
-    <path d="M 187.5 161.5 L 147.5 161.5 L 147.5 138.5 L 187.5 140.5" fill="hotpink" id="56" class="face"/>
-    <path d="M 208.5 161.5 L 187.5 161.5 L 187.5 140.5 L 208.5 144.5" fill="mediumseagreen" id="57" class="face"/>
+    <path d="M 192.5 161.5 L 147.5 161.5 L 147.5 138.5 L 192.5 140.5" fill="hotpink" id="56" class="face"/>
+    <path d="M 211.5 161.5 L 192.5 161.5 L 192.5 140.5 L 211.5 146.5" fill="mediumseagreen" id="57" class="face"/>
   </g>
   <g id="Left side of nose">
-    <path d="M 111.5 113.5 L 72.5 113.5 L 72.5 92.5 L 111.5 90.5" fill="deeppink" id="58" class="face"/>
-    <path d="M 72.5 113.5 L 50.5 113.5 L 50.5 96.5 L 72.5 92.5" fill="limegreen" id="59" class="face"/>
+    <path d="M 111.5 113.5 L 67.5 113.5 L 67.5 92.5 L 111.5 90.5" fill="deeppink" id="58" class="face"/>
+    <path d="M 67.5 113.5 L 47.5 113.5 L 47.5 98.5 L 67.5 92.5" fill="limegreen" id="59" class="face"/>
   </g>
   <g id="right back of side pod">
     <path d="M 68.5 144.5 L 68.5 163.5 L 42.5 163.5 L 42.5 146.5" fill="mediumorchid" id="60" class="face"/>
@@ -148,11 +148,11 @@
   </g>
   <g id="Front right frontal wing">
     <path d="M 6.5 238.5 L 6.5 249.5 L 12.5 246.5 L 12.5 238.5" fill="blueviolet" id="62" class="face"/>
-    <path d="M 29.5 0.5 L 29.5 10.5 L 22.5 13.5 L 22.5 0.5" fill="khaki" id="63" class="face"/>
+    <path d="M 30.5 0.5 L 30.5 10.5 L 23.5 13.5 L 23.5 0.5" fill="khaki" id="63" class="face"/>
   </g>
   <g id="Front left frontal wing">
-    <path d="M 22.5 54.5 L 22.5 66.5 L 30.5 66.5 L 30.5 57.5" fill="black" id="64" class="face"/>
-    <path d="M 23.5 238.5 L 23.5 246.5 L 17.5 246.5 L 17.5 235.5" fill="lightcyan" id="65" class="face"/>
+    <path d="M 15.5 235.5 L 15.5 247.5 L 23.5 247.5 L 23.5 238.5" fill="black" id="64" class="face"/>
+    <path d="M 30.5 57.5 L 30.5 66.5 L 23.5 66.5 L 23.5 54.5" fill="lightcyan" id="65" class="face"/>
   </g>
   <g id="Back horizontal wing">
     <path d="M 64.5 64.5 L 117.5 64.5 L 117.5 68.5 L 64.5 68.5" fill="navajowhite" id="70" class="face"/>
@@ -265,10 +265,10 @@
     <path d="M 222.5 33.5 L 205.5 51.5 L 184.5 48.5" fill="moccasin" id="151" class="face"/>
   </g>
   <g id="Front Right Wing Horizontal">
-    <path d="M 22.5 0.5 L 22.5 14.5 L 19.5 28.5 L 4.5 30.5 L 4.5 0.5" fill="gray" id="176" class="face"/>
+    <path d="M 23.5 0.5 L 23.5 13.5 L 20.5 28.5 L 3.5 30.5 L 3.5 0.5" fill="gray" id="176" class="face"/>
   </g>
   <g id="Front Left Wing Horizontal">
-    <path d="M 19.5 39.5 L 22.5 52.5 L 22.5 66.5 L 4.5 66.5 L 4.5 37.5" fill="blanchedalmond" id="178" class="face"/>
+    <path d="M 20.5 39.5 L 23.5 51.5 L 23.5 66.5 L 3.5 66.5 L 3.5 37.5" fill="blanchedalmond" id="178" class="face"/>
   </g>
   <g id="bottom">
     <path d="M 62.5 3.5  L 32.5 3.5  L 32.5 0.5  L 62.5 0.5 " fill="darkturquoise" id="66" class="face"/>

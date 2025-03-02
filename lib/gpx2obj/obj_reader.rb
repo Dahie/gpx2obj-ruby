@@ -22,7 +22,7 @@ module Gpx2Obj
           vertices << Vertex.new(vertex_count, values[1].to_f, values[2].to_f, values[3].to_f)
           vertex_count += 1
         when "f"
-          faces << values[1..-1].map(&:to_i)
+          faces << values[1..].map(&:to_i)
         end
       end
     end

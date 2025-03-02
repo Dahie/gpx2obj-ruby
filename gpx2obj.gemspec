@@ -10,15 +10,16 @@ Gem::Specification.new do |spec|
   spec.license = "MIT"
   spec.authors = ["Daniel Senff"]
   spec.email = ["mail@danielsenff.de"]
-  spec.homepage = "http://github.com/Dahie/caramelize"
-  spec.summary = "Flexible and modular wiki conversion tool"
-  spec.description = "With Caramelize you can migrate any wiki to git-based Gollum wiki repositories."
+  spec.homepage = "http://github.com/Dahie/gpx2obj"
+  spec.summary = "Tool for converting GP2 shp models to OBJ"
+  spec.description = "Tool for converting GP2 shp models to OBJ"
 
   spec.files = `git ls-files -z`.split("\x0")
   spec.executables = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
   spec.required_ruby_version = ">= 3"
 
+  spec.add_dependency("base64")
   spec.add_dependency("kaitai-struct")
   spec.add_dependency("nokogiri")
   spec.add_dependency("victor")
